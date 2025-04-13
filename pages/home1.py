@@ -1,17 +1,7 @@
 from nicegui import ui, app
-from datetime import datetime, timedelta
-import uuid
-import secrets
-import random
-from utilities.utils import initialize_users
-from utilities.database import UserDB
-from pages.admin import admin_page
-from pages.home1 import home1
-from pages.langflow_chat import chat_page
 
-
-@ui.page('/')
-def home():
+@ui.page('/home1')
+def home1():
     with ui.column().classes('w-full items-center'):
         ui.label('Prepara tu exploración al Silicon Valley').classes('text-h3 q-mb-md')
         ui.label('Explora en forma colaborativa tu experiencia de planear una visita al Silicon Valley').classes('text-h5 q-mb-md')
@@ -33,31 +23,8 @@ def home():
         ui.label('Inicia tu experiencia ahora mismos y crear tu futuro innovando.').classes('text-h6 q-mb-md')
 
         with ui.row().classes('w-full items-center'):
+            ui.button('Admin').classes('text-h5 q-mb-md').on_click(lambda: ui.navigate.to('/admin'))
+            ui.button('Vamonos  ...').classes('text-h5 q-mb-md').on_click(lambda: ui.navigate.to('/page1'))
             ui.button('Planear  ...').classes('text-h5 q-mb-md').on_click(lambda: ui.navigate.to('/chat'))
 
-      
-@app.on_shutdown
-def shutdown():
-    # This code runs when the app is shutting down
-    print("Application is shutting down...")
-    # Clean up resources, close connections, etc.
-    # Cleanup code here
-    pass
 
-
-@app.on_startup
-def on_startup():
-    print("Starting up...")
-
-    app.storage.general['user_list'] = initialize_users()
-    print("Initializing users...")
-
-    # Initialize database
-    print("Initializing database...")
-    user_db = UserDB()
-    user_db._init_db()
-    print("Database initialized")
-
-
-secret_key = secrets.token_hex(32)
-ui.run(title='SV Exploration', port=8080, favicon='static/favicon.svg', storage_secret=secret_key) 
