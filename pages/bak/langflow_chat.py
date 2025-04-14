@@ -31,7 +31,8 @@ def run_flow(message: str, history: Optional[List[dict]] = None) -> dict:
     username = app.storage.browser.get('username', 'User')
     
     if history and len(history) > 0:
-        formatted_history = json.dumps(history)
+        formatted_history = json.dumps(history, 
+                                     ensure_ascii=False)
         payload = {
             "input_value": message,
             "output_type": "chat",
@@ -171,7 +172,7 @@ def download_file():
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"conversation_{app.storage.browser.get('username', 'user')}_{timestamp}.json"
     
-    # Convert conversation history to JSON string with proper encoding
+    # Convert conversation history to JSON string with double quotes
     content = json.dumps(app.storage.browser['conversation_history'], 
                         ensure_ascii=False, 
                         indent=2)
@@ -182,19 +183,19 @@ def download_file():
 def save_db():
     session_id = app.storage.browser['session_id']
     username = app.storage.browser.get('username', 'Unknown User')
-    conversation = str(app.storage.browser['conversation_history'])
+    # Convert to JSON string with double quotes
+    conversation = json.dumps(app.storage.browser['conversation_history'], 
+                            ensure_ascii=False, 
+                            indent=2)
     
     # Check if conversation exists
     existing_conversation = user_db.get_conversation(session_id)
     
     if existing_conversation:
-
         # Update existing conversation
         success = user_db.update_conversation(session_id, conversation)
         ui.notify('Conversation updated' if success else 'Update failed')
     else:
-
         # Create new conversation
         success = user_db.create_conversation(session_id, username, conversation)
-
         ui.notify('Conversation saved' if success else 'Save failed')
