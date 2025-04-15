@@ -197,19 +197,19 @@ def download_file():
 def save_db():
     session_id = app.storage.browser['session_id']
     username = app.storage.browser.get('username', 'Unknown User')
-    conversation = str(app.storage.browser['conversation_history'])
+    # Convert to JSON string with double quotes
+    conversation = json.dumps(app.storage.browser['conversation_history'], 
+                            ensure_ascii=False, 
+                            indent=2)
     
     # Check if conversation exists
     existing_conversation = user_db.get_conversation(session_id)
     
     if existing_conversation:
-
         # Update existing conversation
         success = user_db.update_conversation(session_id, conversation)
         ui.notify('Conversation updated' if success else 'Update failed')
     else:
-
         # Create new conversation
         success = user_db.create_conversation(session_id, username, conversation)
-
         ui.notify('Conversation saved' if success else 'Save failed')
