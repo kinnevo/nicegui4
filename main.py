@@ -24,6 +24,9 @@ def home():
                 ui.label('Durante una conversación de descubrimiento generas ideas y material, al igual que otros participantes, que como tu quieren vivir la experiencia de un viaje a la innovación.').classes('text-body1 q-mb-md text-left')            
                 ui.label('Al final de tu conversación, que puede ser una o varias conversaciones. Te compartiremos el resumen de cada conversación y un reporte de los puntos de interés y experiencias que los otros participantes que podrían ser tus compañeros de viaje quieren experimentar.').classes('text-body1 q-mb-md text-left')    
                 ui.label('Este resumen, en colaboración con nuestro equipo de expertos es un material de referencia para construir tu agenda y abrir la mente que hará a tu viaje ser un viaje de aprendizaje y exploración.').classes('text-body1 q-mb-md text-left')            
+            
+                with ui.row().classes('w-full justify-center'):
+                    ui.button('Planear  ...').classes('text-h6 q-mb-md').on_click(lambda: ui.navigate.to('/chat'))
 
             # Right column with image
             with ui.column().classes('w-2/5'):  # Takes up 50% of the width
@@ -31,9 +34,7 @@ def home():
 
         
         ui.label('Inicia tu experiencia ahora mismos y crear tu futuro innovando.').classes('text-h6 q-mb-md')
-
-        with ui.row().classes('w-full items-center'):
-            ui.button('Planear  ...').classes('text-h5 q-mb-md').on_click(lambda: ui.navigate.to('/chat'))
+        ui.html('<strong>Aviso de Privacidad</strong>: Las conversaciones en este sitio son almacenadas de manera anónima con el propósito exclusivo de analizar los intereses de los participantes y mejorar el desarrollo de experiencias de conocimiento. Toda la información recopilada es para uso interno y no será compartida con terceros.').classes('text-body2 q-mb-md text-justify')
 
       
 @app.on_shutdown

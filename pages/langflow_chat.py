@@ -141,23 +141,22 @@ def chat_page():
         ui.label('Interactive Visit Planning Chat').classes('text-h4 q-mb-md')
         
         # Header with user info
-        with ui.row().classes('w-full bg-gray-100 p-4 rounded-lg'):
-            ui.label(f'User: {app.storage.browser.get("username")}').classes('text-lg')
-            ui.label(f'Session: {app.storage.browser["session_id"]}').classes('text-lg')
-        
+        with ui.row().classes('w-full bg-gray-100 p-4 rounded-md'):
+            ui.button('Return to Home', on_click=lambda: ui.navigate.to('/')).classes('bg-blue-500 text-white')
+            ui.label(f'User: {app.storage.browser.get("username")}').classes('text-md')
+            ui.label(f'Session: {app.storage.browser["session_id"]}').classes('text-md')
+            ui.button('Logout', on_click=logout_session).classes('bg-blue-500 text-white')
+
         # Chat display
         chat_display = ui.markdown('').classes('w-full h-64 border rounded-lg p-4 overflow-auto')
         
         # Message input
-        message_input = ui.textarea('Type your message here...').classes('w-full h-64')
-        
+        message_input = ui.textarea('Type your message here...').classes('w-full h-50 mb-1')
 
         # Send button
         ui.button('Send', on_click=lambda: send_message(chat_display, message_input, session_id)).classes('w-full')
         
-        with ui.row().classes('w-full max-w-5xl mx-auto p-2 justify-center gap-4'):
-            ui.button('Return to Home', on_click=lambda: ui.navigate.to('/')).classes('bg-blue-500 text-white')
-            ui.button('Logout', on_click=logout_session).classes('bg-blue-500 text-white')
+        #with ui.row().classes('w-full max-w-5xl mx-auto p-2 justify-center gap-4'):
             #ui.button('Download a Files', on_click=download_file).classes('bg-blue-500 text-white')
             #ui.button('Save DB', on_click=save_db).classes('bg-blue-500 text-white')
 
