@@ -49,8 +49,11 @@ def run_flow(message: str, history: Optional[List[dict]] = None) -> dict:
             "session_id": session_id
         }
 
-    headers = {"Authorization": f"Bearer {APPLICATION_TOKEN}", "Content-Type": "application/json"}
-    
+
+    headers = {
+        "Content-Type": "application/json",
+        "x-api-key": APPLICATION_TOKEN  # Authentication key from environment variable
+    }    
     try:
         response = requests.post(api_url, json=payload, headers=headers, timeout=60)
         response_data = response.json()
@@ -138,14 +141,29 @@ def chat_page():
 
     # Main content
     with ui.column().classes('w-full max-w-5xl mx-auto p-4'):
-        ui.label('Interactive Visit Planning Chat').classes('text-h4 q-mb-md')
+        with ui.row().classes('w-full bg-gray-100 p-4 rounded-md justify-center'):
+            ui.image('static/kn_logo.png').classes('w-20 h-20')
+            ui.label('Interactive Visit Planning Chat').classes('text-h4 q-mb-md')
         
         # Header with user info
-        with ui.row().classes('w-full bg-gray-100 p-4 rounded-md'):
+        with ui.row().classes('w-full bg-gray-100 p-4 rounded-md justify-center'):
             ui.button('Return to Home', on_click=lambda: ui.navigate.to('/')).classes('bg-blue-500 text-white')
+            ui.button('Suggested Questions', on_click=lambda: questions_dialog.open()).classes('bg-blue-500 text-white')
+            ui.button('Logout', on_click=logout_session).classes('bg-blue-500 text-white')
+        with ui.row().classes('w-full bg-gray-100 p-4 rounded-md'):
             ui.label(f'User: {app.storage.browser.get("username")}').classes('text-md')
             ui.label(f'Session: {app.storage.browser["session_id"]}').classes('text-md')
-            ui.button('Logout', on_click=logout_session).classes('bg-blue-500 text-white')
+
+        # Questions Dialog
+        with ui.dialog() as questions_dialog:
+            with ui.card().classes('w-full max-w-2xl'):
+                ui.label('Suggested Questions').classes('text-h5 q-mb-md')
+                with ui.scroll_area().classes('w-full h-96'):
+                    # Load questions from examples.py
+                    from utilities.examples import get_example_questions
+                    ui.markdown(get_example_questions()).classes('w-full')
+                with ui.row().classes('w-full justify-end'):
+                    ui.button('Close', on_click=questions_dialog.close).classes('bg-blue-500 text-white')
 
         # Chat display
         chat_display = ui.markdown('').classes('w-full h-64 border rounded-lg p-4 overflow-auto')
@@ -212,3 +230,5 @@ def save_db():
         # Create new conversation
         success = user_db.create_conversation(session_id, username, conversation)
         ui.notify('Conversation saved' if success else 'Save failed')
+
+        

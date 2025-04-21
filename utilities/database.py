@@ -106,3 +106,17 @@ def save_db():
     if not user_db.update_conversation(session_id, conversation):
         # If update fails, create new conversation
         user_db.create_conversation(session_id, username, conversation) 
+
+def get_conversation(session_id: str) -> Optional[Dict[str, Any]]:
+    """Get conversation details by session_id."""
+    conn = user_db.connection_pool.getconn()
+    try:
+        with conn.cursor(cursor_factory=DictCursor) as cursor:
+            cursor.execute('SELECT * FROM conversations WHERE session_id = %s', (session_id,))
+            result = cursor.fetchone()
+            if result:
+                return dict(result)
+            return None
+    finally:
+        user_db.connection_pool.putconn(conn)
+        
